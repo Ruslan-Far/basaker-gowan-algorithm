@@ -30,25 +30,43 @@ public class Main {
 //			{0, 0, 0, 0}
 //	};
 
+//	public static int[][] initialMatrix = {
+//			{0, 5, 1, 0},
+//			{0, 0, 0, 1},
+//			{0, 1, 0, 6},
+//			{0, 0, 0, 0}
+//	};
+//
+//	private static int[][] c = {
+//			{0, 4, 2, 0},
+//			{0, 0, 0, 2},
+//			{0, 3, 0, 3},
+//			{0, 0, 0, 0}
+//	};
+
 	public static int[][] initialMatrix = {
-			{0, 5, 1, 0},
-			{0, 0, 0, 1},
-			{0, 1, 0, 6},
-			{0, 0, 0, 0}
+			{0, 5, 1, 0, 0, 0, 0},
+			{0, 0, 0, 7, 1, 0, 0},
+			{0, 3, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 2},
+			{0, 0, 0, 0, 0, 2, 0},
+			{0, 0, 0, 3, 0, 0, 12},
+			{0, 0, 0, 0, 0, 0, 0}
 	};
 
 	private static int[][] c = { // пропускная способность
-			{0, 4, 2, 0},
-			{0, 0, 0, 2},
-			{0, 3, 0, 3},
-			{0, 0, 0, 0}
+			{0, 3, 2, 0, 0, 0, 0},
+			{0, 0, 0, 3, 5, 0, 0},
+			{0, 4, 0, 0, 0, 0, 0},
+			{0, 0, 0, 0, 0, 0, 4},
+			{0, 0, 0, 0, 0, 4, 0},
+			{0, 0, 0, 2, 0, 0, 2},
+			{0, 0, 0, 0, 0, 0, 0}
 	};
 
 	private static int[][] f = new int[c.length][c[0].length]; // запущенные потоки
-
 	public static int s = 0; // начало движения
-	public static int t = 3; // конец движения
-
+	public static int t = 6; // конец движения
 	private static int v = 3; // мощность
 
 	public static void main(String[] args) {
@@ -126,9 +144,6 @@ public class Main {
 						min = f[coords[0]][coords[1]];
 					else
 						min = f[coords[1]][coords[0]];
-//					System.out.println("min=" + min);
-//					System.out.println("coords[0]=" + coords[0]);
-//					System.out.println("coords[1]=" + coords[1]);
 				}
 			}
 		}

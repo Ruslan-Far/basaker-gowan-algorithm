@@ -95,6 +95,16 @@ public class Dijkstra {
 			shortestWay[begin][1] = v[i - 1];
 			begin++;
 		}
-		CommonFunctions.printMatrix(shortestWay);
+		printShortestWay(shortestWay);
+	}
+
+	public static void printShortestWay(int[][] matrix) {
+		for (int i = 0; i < matrix.length; i++) {
+			for (int j = 0; j < matrix[i].length; j++) {
+				System.out.printf("%4d\t", matrix[i][j] + 1);
+			}
+			System.out.println();
+		}
+		System.out.println();
 	}
 }
