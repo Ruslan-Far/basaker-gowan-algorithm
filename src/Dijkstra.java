@@ -30,7 +30,10 @@ public class Dijkstra {
 				{
 					if (Main.initialMatrix[minindex][i] != 0)
 					{
-						temp = min + Main.initialMatrix[minindex][i];
+						if (Main.initialMatrix[minindex][i] < 0)
+							temp = min;
+						else
+							temp = min + Main.initialMatrix[minindex][i];
 						if (temp < d[i])
 						{
 							d[i] = temp;
@@ -70,7 +73,12 @@ public class Dijkstra {
 			for (int i = 0; i < d.length; i++)
 				if (Main.initialMatrix[i][end] != 0)
 				{
-					int temp = weight - Main.initialMatrix[i][end];
+					int temp;
+
+					if (Main.initialMatrix[i][end] < 0)
+						temp = weight;
+					else
+						temp = weight - Main.initialMatrix[i][end];
 					if (temp == d[i])
 					{
 						weight = temp;
@@ -81,7 +89,7 @@ public class Dijkstra {
 				}
 		}
 		shortestWay = new int[k - 1][2];
-		System.out.println("\nВывод кратчайшего пути");
+		System.out.println("Вывод кратчайшего пути");
 		for (int i = k - 1; i >= 1; i--) {
 			shortestWay[begin][0] = v[i];
 			shortestWay[begin][1] = v[i - 1];

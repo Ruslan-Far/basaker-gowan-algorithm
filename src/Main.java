@@ -57,18 +57,30 @@ public class Main {
 		int e;
 		int e1;
 		int e2;
+		int count;
 
 		copyInitialMatrix = getCopyInitialMatrix();
 		foundV = 0;
+		count = 0;
 		while (foundV < v) {
+			System.out.println(++count + " итерация");
 			Dijkstra.algorithm();
 			if (Dijkstra.shortestWay == null)
 				break;
 			e1 = findE1();
+			System.out.println("e1 = " + e1);
 			e2 = findE2();
+			System.out.println("e2 = " + e2);
 			e = findE(e1, e2, foundV);
+			System.out.println("e = " + e);
 			foundV += e;
-			redraw(e1);
+			System.out.println("foundV = " + foundV);
+			redraw(e1, e);
+			System.out.println("Матрица стоимости");
+			CommonFunctions.printMatrix(initialMatrix);
+			System.out.println("Матрица запущенных потоков");
+			CommonFunctions.printMatrix(f);
+			System.out.println("\n\n\n");
 		}
 		getAnswer(copyInitialMatrix, foundV);
 	}
@@ -109,8 +121,14 @@ public class Main {
 		for (int i = 0; i < Dijkstra.shortestWay.length; i++) {
 			coords = Dijkstra.shortestWay[i];
 			if (initialMatrix[coords[0]][coords[1]] < 0) {
-				if (c[coords[0]][coords[1]] < min) {
-					min = c[coords[0]][coords[1]];
+				if (f[coords[0]][coords[1]] < min) {
+					if (f[coords[0]][coords[1]] != 0)
+						min = f[coords[0]][coords[1]];
+					else
+						min = f[coords[1]][coords[0]];
+//					System.out.println("min=" + min);
+//					System.out.println("coords[0]=" + coords[0]);
+//					System.out.println("coords[1]=" + coords[1]);
 				}
 			}
 		}
@@ -125,18 +143,23 @@ public class Main {
 		return e;
 	}
 
-	private static void redraw(int e1) {
+	private static void redraw(int e1, int e) {
 		int[] coords;
 
 		for (int i = 0; i < Dijkstra.shortestWay.length; i++) {
 			coords = Dijkstra.shortestWay[i];
+			if (initialMatrix[coords[0]][coords[1]] > 0)
+				f[coords[0]][coords[1]] += e;
+			else {
+				if (f[coords[0]][coords[1]] != 0)
+					f[coords[0]][coords[1]] -= e;
+				else
+					f[coords[1]][coords[0]] -= e;
+			}
+			initialMatrix[coords[1]][coords[0]] = -initialMatrix[coords[0]][coords[1]];
 			if (e1 == c[coords[0]][coords[1]]) {
-				initialMatrix[coords[0]][coords[1]] = -initialMatrix[coords[0]][coords[1]];
+				initialMatrix[coords[0]][coords[1]] = 0;
 			}
-			else if (e1 > 0 && e1 < c[coords[0]][coords[1]]) {
-				initialMatrix[coords[1]][coords[0]] = -initialMatrix[coords[0]][coords[1]];
-			}
-			f[coords[0]][coords[1]] = e1;
 		}
 	}
 
