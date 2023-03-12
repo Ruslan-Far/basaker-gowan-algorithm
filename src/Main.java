@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class Main {
 
 	public static final int INF_MAX = 999999999;
@@ -21,17 +23,147 @@ public class Main {
 //			{14, 0, 0, 0, 9, 0},
 //	};
 
-	public static final int[][] INITIAL_MATRIX = {
+//	public static int[][] initialMatrix = {
+//			{0, 5, 1, 0},
+//			{0, 0, 0, 0},
+//			{0, 1, 0, 0},
+//			{0, 0, 0, 0}
+//	};
+
+	public static int[][] initialMatrix = {
 			{0, 5, 1, 0},
 			{0, 0, 0, 1},
 			{0, 1, 0, 6},
 			{0, 0, 0, 0}
 	};
 
-	public static int s = 0;
-	public static int t = 3;
+	private static int[][] c = { // пропускная способность
+			{0, 4, 2, 0},
+			{0, 0, 0, 2},
+			{0, 3, 0, 3},
+			{0, 0, 0, 0}
+	};
+
+	private static int[][] f = new int[c.length][c[0].length]; // запущенные потоки
+
+	public static int s = 0; // начало движения
+	public static int t = 3; // конец движения
+
+	private static int v = 3; // мощность
 
 	public static void main(String[] args) {
-		Dijkstra.algorithm();
+		int[][] copyInitialMatrix;
+		int foundV;
+		int e;
+		int e1;
+		int e2;
+
+		copyInitialMatrix = getCopyInitialMatrix();
+		foundV = 0;
+		while (foundV < v) {
+			Dijkstra.algorithm();
+			if (Dijkstra.shortestWay == null)
+				break;
+			e1 = findE1();
+			e2 = findE2();
+			e = findE(e1, e2, foundV);
+			foundV += e;
+			redraw(e1);
+		}
+		getAnswer(copyInitialMatrix, foundV);
+	}
+
+	private static int[][] getCopyInitialMatrix() {
+		int[][] copyInitialMatrix;
+
+		copyInitialMatrix = new int[initialMatrix.length][initialMatrix[0].length];
+		for (int i = 0; i < copyInitialMatrix.length; i++) {
+			for (int j = 0; j < copyInitialMatrix[i].length; j++) {
+				copyInitialMatrix[i][j] = initialMatrix[i][j];
+			}
+		}
+		return copyInitialMatrix;
+	}
+
+	private static int findE1() {
+		int min;
+		int[] coords;
+
+		min = INF_MAX;
+		for (int i = 0; i < Dijkstra.shortestWay.length; i++) {
+			coords = Dijkstra.shortestWay[i];
+			if (initialMatrix[coords[0]][coords[1]] > 0) {
+				if (c[coords[0]][coords[1]] - f[coords[0]][coords[1]] < min) {
+					min = c[coords[0]][coords[1]] - f[coords[0]][coords[1]];
+				}
+			}
+		}
+		return min;
+	}
+
+	private static int findE2() {
+		int min;
+		int[] coords;
+
+		min = INF_MAX;
+		for (int i = 0; i < Dijkstra.shortestWay.length; i++) {
+			coords = Dijkstra.shortestWay[i];
+			if (initialMatrix[coords[0]][coords[1]] < 0) {
+				if (c[coords[0]][coords[1]] < min) {
+					min = c[coords[0]][coords[1]];
+				}
+			}
+		}
+		return min;
+	}
+
+	private static int findE(int e1, int e2, int foundV) {
+		int e;
+
+		e = Math.min(e1, e2);
+		e = Math.min(e, v - foundV);
+		return e;
+	}
+
+	private static void redraw(int e1) {
+		int[] coords;
+
+		for (int i = 0; i < Dijkstra.shortestWay.length; i++) {
+			coords = Dijkstra.shortestWay[i];
+			if (e1 == c[coords[0]][coords[1]]) {
+				initialMatrix[coords[0]][coords[1]] = -initialMatrix[coords[0]][coords[1]];
+			}
+			else if (e1 > 0 && e1 < c[coords[0]][coords[1]]) {
+				initialMatrix[coords[1]][coords[0]] = -initialMatrix[coords[0]][coords[1]];
+			}
+			f[coords[0]][coords[1]] = e1;
+		}
+	}
+
+	private static void getAnswer(int[][] copyInitialMatrix, int foundV) {
+		if (foundV == v) {
+			System.out.println("Получилось добиться указанной мощности = " + v);
+		}
+		else {
+			System.out.println("Не получилось добиться указанной мощности = " + v);
+			System.out.println("Максимальная полученная мощность = " + foundV);
+		}
+		System.out.println("Матрица запущенных потоков");
+		CommonFunctions.printMatrix(f);
+		System.out.println("\nМинимальная стоимость = " + getMinCost(copyInitialMatrix));
+	}
+
+	private static int getMinCost(int[][] copyInitialMatrix) {
+		int minCost;
+
+		minCost = 0;
+		for (int i = 0; i < f.length; i++) {
+			for (int j = 0; j < f[i].length; j++) {
+				if (f[i][j] > 0) {
+					minCost += f[i][j] * copyInitialMatrix[i][j];
+				}
+			}
+		}
+		return minCost;
 	}
 }

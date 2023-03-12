@@ -3,7 +3,7 @@ public class Dijkstra {
 	public static int[][] shortestWay;
 
 	public static void algorithm() {
-		int d[] = new int[Main.INITIAL_MATRIX.length];
+		int d[] = new int[Main.initialMatrix.length];
 		int v[] = new int[d.length];
 		int temp, minindex, min;
 
@@ -28,9 +28,9 @@ public class Dijkstra {
 			{
 				for (int i = 0; i < d.length; i++)
 				{
-					if (Main.INITIAL_MATRIX[minindex][i] != 0)
+					if (Main.initialMatrix[minindex][i] != 0)
 					{
-						temp = min + Main.INITIAL_MATRIX[minindex][i];
+						temp = min + Main.initialMatrix[minindex][i];
 						if (temp < d[i])
 						{
 							d[i] = temp;
@@ -40,9 +40,21 @@ public class Dijkstra {
 				v[minindex] = 0;
 			}
 		} while (minindex < Main.INF_MAX);
-		System.out.println("Кратчайшие расстояния до вершин:");
-		CommonFunctions.printArray(d);
-		restorePath(d);
+		if (isReachability(d)) {
+			System.out.println("Кратчайшие расстояния до вершин:");
+			CommonFunctions.printArray(d);
+			restorePath(d);
+		}
+		else {
+			System.out.println("Невозможно добраться от начальной точки до конечной точки");
+			shortestWay = null;
+		}
+	}
+
+	private static boolean isReachability(int[] d) {
+		if (d[Main.t] == Main.INF_MAX)
+			return false;
+		return true;
 	}
 
 	private static void restorePath(int[] d) {
@@ -56,9 +68,9 @@ public class Dijkstra {
 		while (end != begin)
 		{
 			for (int i = 0; i < d.length; i++)
-				if (Main.INITIAL_MATRIX[i][end] != 0)
+				if (Main.initialMatrix[i][end] != 0)
 				{
-					int temp = weight - Main.INITIAL_MATRIX[i][end];
+					int temp = weight - Main.initialMatrix[i][end];
 					if (temp == d[i])
 					{
 						weight = temp;
